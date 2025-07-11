@@ -1,16 +1,11 @@
 package com.example
 
 import io.ktor.http.HttpStatusCode
-import io.ktor.serialization.kotlinx.json.json
+import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.application.*
-import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
-import io.ktor.server.application.*
-import io.ktor.http.*
+import io.ktor.server.plugins.contentnegotiation.*
 import io.ktor.server.plugins.statuspages.*
-import io.ktor.server.plugins.statuspages.StatusPages
 import io.ktor.server.response.*
-
-//import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
 
 fun main(args: Array<String>) {
     io.ktor.server.netty.EngineMain.main(args)
@@ -18,22 +13,19 @@ fun main(args: Array<String>) {
 
 fun Application.module() {
     configureHTTP()
-    configureSerialization()
-    configureRouting()
-    install(StatusPages) {
-        exception<NoSuchElementException> { call: ApplicationCall, cause: NoSuchElementException ->
-            call.respond(HttpStatusCode.NotFound, cause.message ?: "Not Found")
-        }
-
-        exception<Throwable> { call: ApplicationCall, cause: Throwable ->
-            call.respond(HttpStatusCode.InternalServerError, "Unexpected error: ${cause.localizedMessage}")
-        }
-    }
-
-}
-
-fun Application.configureSerialization(){
-    install(ContentNegotiation){
+    install(ContentNegotiation) {
         json()
     }
+    // ติดตั้ง plugin สำหรับจัดการ error และสถานะ HTTP
+    install(StatusPages) {
+        // กำหนดการจัดการกรณีเกิด NoSuchElementException เช่น หา item ไม่เจอใน list
+        exception<NoSuchElementException> { call, cause ->
+            call.respond(HttpStatusCode.NotFound, cause.message ?: "Not Found")
+        }
+        exception<Throwable> { call, cause ->
+            cause.printStackTrace()  // แสดงรายละเอียดของข้อผิดพลาดใน console (เพื่อให้ developer ดู debug ได้)
+            call.respond(HttpStatusCode.InternalServerError, "Unexpected error: ${cause.localizedMessage}")  // ส่ง response กลับไปยัง client ว่าเกิด error 500 พร้อมข้อความ
+        }
+    }
+    configureRouting()
 }
