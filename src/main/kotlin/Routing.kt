@@ -140,41 +140,41 @@ fun Application.configureRouting() {
             }
         }
 
-        // รายงานสรุปรายจ่ายรายเดือน (ตัวอย่างเฉพาะรายจ่าย)
-        get("/reports/monthly") {
-            val year = call.request.queryParameters["year"]?.toIntOrNull()
-                ?: return@get call.respond(HttpStatusCode.BadRequest, "Missing or invalid year")
-            val month = call.request.queryParameters["month"]?.toIntOrNull()
-                ?: return@get call.respond(HttpStatusCode.BadRequest, "Missing or invalid month")
-
-            // กรองรายการตามปี, เดือน และประเภท expense
-            val filtered = DataStorage.transactions.filter {
-                val dt = LocalDate.parse(it.date)
-                dt.year == year && dt.monthValue == month && it.type == "expense"
-            }
-
-            // รวมยอดเงินแยกตามหมวด
-            val report = filtered.groupBy { it.categoryId }
-                .map { (categoryId, txns) ->
-                    val categoryName = DataStorage.categories.find { it.id == categoryId }?.name ?: "Unknown"
-                    val totalAmount = txns.sumOf { it.amount }
-                    val txnSummaries = txns.map {
-                        TransactionSummary(
-                            description = it.description,
-                            amount = it.amount,
-                            date = it.date,
-                            category = categoryName
-                        )
-                    }
-                    ReportDetail(
-                        category = categoryName,
-                        totalAmount = totalAmount,
-                        transactions = txnSummaries
-                    )
-                }
-
-            call.respond(report)
-        }
+//        // รายงานสรุปรายจ่ายรายเดือน (ตัวอย่างเฉพาะรายจ่าย)
+//        get("/reports/monthly") {
+//            val year = call.request.queryParameters["year"]?.toIntOrNull()
+//                ?: return@get call.respond(HttpStatusCode.BadRequest, "Missing or invalid year")
+//            val month = call.request.queryParameters["month"]?.toIntOrNull()
+//                ?: return@get call.respond(HttpStatusCode.BadRequest, "Missing or invalid month")
+//
+//            // กรองรายการตามปี, เดือน และประเภท expense
+//            val filtered = DataStorage.transactions.filter {
+//                val dt = LocalDate.parse(it.date)
+//                dt.year == year && dt.monthValue == month && it.type == "expense"
+//            }
+//
+//            // รวมยอดเงินแยกตามหมวด
+//            val report = filtered.groupBy { it.categoryId }
+//                .map { (categoryId, txns) ->
+//                    val categoryName = DataStorage.categories.find { it.id == categoryId }?.name ?: "Unknown"
+//                    val totalAmount = txns.sumOf { it.amount }
+//                    val txnSummaries = txns.map {
+//                        TransactionSummary(
+//                            description = it.description,
+//                            amount = it.amount,
+//                            date = it.date,
+//                            category = categoryName
+//                        )
+//                    }
+//                    ReportDetail(
+//                        category = categoryName,
+//                        totalAmount = totalAmount,
+//                        transactions = txnSummaries
+//                    )
+//                }
+//
+//            call.respond(report)
+//        }
 
 
         //รายงานสรุปรายรับรายจ่ายรายวัน,สัปดาห์,เดือน,ปี
