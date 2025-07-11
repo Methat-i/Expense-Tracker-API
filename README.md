@@ -1,40 +1,46 @@
-# ktor-sample672110155
+# Expense Tracker API
 
-This project was created using the [Ktor Project Generator](https://start.ktor.io).
+API สำหรับแอปพลิเคชันติดตามรายรับ-รายจ่ายส่วนบุคคล พัฒนาด้วย Kotlin และ Ktor
 
-Here are some useful links to get you started:
+## Project Overview
 
-- [Ktor Documentation](https://ktor.io/docs/home.html)
-- [Ktor GitHub page](https://github.com/ktorio/ktor)
-- The [Ktor Slack chat](https://app.slack.com/client/T09229ZC6/C0A974TJ9). You'll need
-  to [request an invite](https://surveys.jetbrains.com/s3/kotlin-slack-sign-up) to join.
+Expense Tracker API ช่วยให้ผู้ใช้สามารถบันทึกและจัดการรายการรายรับ-รายจ่าย พร้อมจัดหมวดหมู่ และเรียกดูรายงานสรุปรายรับรายจ่ายตามช่วงเวลาต่างๆ เช่น รายวัน รายสัปดาห์ รายเดือน และรายปี
 
-## Features
+## Technologies Used
 
-Here's a list of features included in this project:
+- Kotlin
+- Ktor Framework
+- kotlinx.serialization (สำหรับ JSON serialization)
+- JUnit (สำหรับ Unit Testing)
 
-| Name                                               | Description                                                 |
-| ----------------------------------------------------|------------------------------------------------------------- |
-| [Routing](https://start.ktor.io/p/routing-default) | Allows to define structured routes and associated handlers. |
+## Key Features
 
-## Building & Running
+CRUD สำหรับ Transactions (id, description, amount, type (income/expense), date, categoryId)
+CRUD สำหรับ Categories (id, name)
+Endpoint สำหรับสร้างรายงานสรุป เช่น GET /reports/monthly?year=2024&month=12 เพื่อดูสรุปรายจ่ายตามหมวดหมู่ในเดือนนั้นๆ
 
-To build or run the project, use one of the following tasks:
+## REST API Endpoints Examples
 
-| Task                          | Description                                                          |
-| -------------------------------|---------------------------------------------------------------------- |
-| `./gradlew test`              | Run the tests                                                        |
-| `./gradlew build`             | Build everything                                                     |
-| `buildFatJar`                 | Build an executable JAR of the server with all dependencies included |
-| `buildImage`                  | Build the docker image to use with the fat JAR                       |
-| `publishImageToLocalRegistry` | Publish the docker image locally                                     |
-| `run`                         | Run the server                                                       |
-| `runDocker`                   | Run using the local docker image                                     |
+- `GET /categories` - ดึงรายการหมวดหมู่ทั้งหมด
+- `POST /categories` - สร้างหมวดหมู่ใหม่
+- `PUT /categories/{id}` - แก้ไขหมวดหมู่
+- `DELETE /categories/{id}` - ลบหมวดหมู่
 
-If the server starts successfully, you'll see the following output:
+- `GET /transactions` - ดึงรายการทั้งหมด
+- `POST /transactions` - สร้างรายการใหม่
+- `PUT /transactions/{id}` - แก้ไขรายการ
+- `DELETE /transactions/{id}` - ลบรายการ
 
-```
-2024-12-04 14:32:45.584 [main] INFO  Application - Application started in 0.303 seconds.
-2024-12-04 14:32:45.682 [main] INFO  Application - Responding at http://0.0.0.0:8080
-```
+- `GET /reports?period=daily&year=2025&month=7&day=11&type=expense`  - รายงานสรุปรายจ่ายรายวัน
+- `GET /reports?period=weekly&year=2025&month=7&week=2&type=expense` - รายงานสรุปรายจ่ายรายสัปดาห์
+- `GET /reports?period=monthly&year=2025&month=7&type=expense`       - รายงานสรุปรายจ่ายรายเดือน
+- `GET /reports?period=yearly&year=2025&type=expense`                - รายงานสรุปรายจ่ายรายปี
+- ถ้าเปลี่ยน type=expense เป็น income ก็จะเป็นรายรับ
 
+## Installation and Usage
+
+1. ติดตั้ง [JDK 17](https://adoptium.net/) หรือเวอร์ชันที่รองรับ
+2. คลอนโปรเจกต์นี้:
+   ```bash
+   git clone https://github.com/Methat-i/Expense-Tracker-API.git
+   cd Expense-Tracker-API
